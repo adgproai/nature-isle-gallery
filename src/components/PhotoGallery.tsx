@@ -28,6 +28,7 @@ export const PhotoGallery = () => {
     
     setPhotos((prev) => [...prev, ...newPhotos]);
     toast.success(`${acceptedFiles.length} photo${acceptedFiles.length > 1 ? 's' : ''} uploaded successfully!`);
+    setShowUpload(false); // Hide upload area after successful upload
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

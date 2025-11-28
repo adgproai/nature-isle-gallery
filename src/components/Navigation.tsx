@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "./NavLink";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Menu, X, Camera } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,28 +17,12 @@ export const Navigation = () => {
   }, []);
 
   const navLinks = [
-    { to: "#hero", label: "Home" },
-    { to: "#gallery", label: "Gallery" },
-    { to: "#services", label: "Services" },
-    { to: "#about", label: "About" },
-    { to: "#contact", label: "Contact" },
+    { to: "/", label: "Home" },
+    { to: "/gallery", label: "Gallery" },
+    { to: "/services", label: "Services" },
+    { to: "/about", label: "About" },
+    { to: "/contact", label: "Contact" },
   ];
-
-  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, to: string) => {
-    e.preventDefault();
-    const element = document.querySelector(to);
-    if (element) {
-      const offset = 80; // Account for fixed navbar
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth"
-      });
-      setIsOpen(false);
-    }
-  };
 
   return (
     <motion.nav
@@ -50,7 +34,7 @@ export const Navigation = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <a href="#hero" onClick={(e) => scrollToSection(e, "#hero")} className="flex items-center gap-2 group cursor-pointer">
+          <Link to="/" className="flex items-center gap-2 group cursor-pointer">
             <Camera className="w-8 h-8 text-primary group-hover:text-accent transition-colors" />
             <div>
               <h1 className="font-serif text-2xl font-bold text-foreground">
@@ -58,25 +42,24 @@ export const Navigation = () => {
               </h1>
               <p className="text-xs text-muted-foreground">Photography</p>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.to}
-                href={link.to}
-                onClick={(e) => scrollToSection(e, link.to)}
-                className="text-foreground hover:text-primary transition-colors font-medium cursor-pointer"
+                to={link.to}
+                className="text-foreground hover:text-primary transition-colors font-medium"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
-            <a href="#contact" onClick={(e) => scrollToSection(e, "#contact")}>
+            <Link to="/contact">
               <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90">
                 Book Now
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,20 +82,20 @@ export const Navigation = () => {
             >
               <div className="flex flex-col gap-4 pt-4 pb-6">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     key={link.to}
-                    href={link.to}
-                    onClick={(e) => scrollToSection(e, link.to)}
-                    className="text-foreground hover:text-primary transition-colors font-medium py-2 cursor-pointer"
+                    to={link.to}
+                    onClick={() => setIsOpen(false)}
+                    className="text-foreground hover:text-primary transition-colors font-medium py-2"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
-                <a href="#contact" onClick={(e) => scrollToSection(e, "#contact")}>
+                <Link to="/contact">
                   <Button variant="default" className="bg-primary hover:bg-primary/90 w-full">
                     Book Now
                   </Button>
-                </a>
+                </Link>
               </div>
             </motion.div>
           )}
