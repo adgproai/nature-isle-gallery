@@ -40,7 +40,7 @@ export const Hero = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="font-serif text-5xl md:text-7xl font-bold mb-6 leading-tight"
           >
-            Jireh Durand
+            DominicaLens
             <br />
             <span className="text-accent">Photography</span>
           </motion.h1>
