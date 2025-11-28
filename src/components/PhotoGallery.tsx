@@ -1,10 +1,9 @@
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, X, Play, Check, Download } from "lucide-react";
+import { Upload, X, Play, Check } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import { Checkbox } from "./ui/checkbox";
 import { toast } from "sonner";
 
 interface Photo {
@@ -18,6 +17,7 @@ export const PhotoGallery = () => {
   const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
   const [isSlideshow, setIsSlideshow] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [showUpload, setShowUpload] = useState(false);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newPhotos: Photo[] = acceptedFiles.map((file) => ({
@@ -78,35 +78,58 @@ export const PhotoGallery = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="mb-12"
         >
-          <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            Photo Gallery
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
-            Upload your photos in batches and create stunning slideshows
-          </p>
-        </motion.div>
-
-        {/* Upload Area */}
-        <Card className="mb-12 border-2 border-dashed border-border hover:border-primary transition-colors">
-          <div
-            {...getRootProps()}
-            className={`p-12 text-center cursor-pointer transition-colors ${
-              isDragActive ? "bg-primary/5" : "bg-card"
-            }`}
-          >
-            <input {...getInputProps()} />
-            <Upload className="w-12 h-12 mx-auto mb-4 text-primary" />
-            <p className="text-lg font-semibold text-card-foreground mb-2">
-              {isDragActive ? "Drop photos here" : "Drag & drop photos here"}
-            </p>
-            <p className="text-muted-foreground mb-4">or click to browse</p>
-            <Button variant="outline" type="button">
-              Select Photos
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h2 className="font-serif text-4xl md:text-5xl font-bold mb-4 text-foreground">
+                Photo Gallery
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl">
+                Upload your photos in batches and create stunning slideshows
+              </p>
+            </div>
+            <Button
+              variant="link"
+              onClick={() => setShowUpload(!showUpload)}
+              className="text-primary hover:text-primary/80"
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Upload Photos
             </Button>
           </div>
-        </Card>
+
+          {/* Upload Area - Toggleable */}
+          <AnimatePresence>
+            {showUpload && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Card className="mb-8 border-2 border-dashed border-border hover:border-primary transition-colors">
+                  <div
+                    {...getRootProps()}
+                    className={`p-12 text-center cursor-pointer transition-colors ${
+                      isDragActive ? "bg-primary/5" : "bg-card"
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    <Upload className="w-12 h-12 mx-auto mb-4 text-primary" />
+                    <p className="text-lg font-semibold text-card-foreground mb-2">
+                      {isDragActive ? "Drop photos here" : "Drag & drop photos here"}
+                    </p>
+                    <p className="text-muted-foreground mb-4">or click to browse</p>
+                    <Button variant="outline" type="button">
+                      Select Photos
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
         {/* Gallery Controls */}
         {photos.length > 0 && (
