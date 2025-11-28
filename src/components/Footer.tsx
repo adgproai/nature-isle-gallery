@@ -13,7 +13,7 @@ export const Footer = () => {
             <div className="flex items-center gap-2 mb-4">
               <Camera className="w-8 h-8 text-accent" />
               <div>
-                <h3 className="font-serif text-2xl font-bold">Jireh Durand</h3>
+                <h3 className="font-serif text-2xl font-bold">DominicaLens</h3>
                 <p className="text-sm text-white/70">Photography</p>
               </div>
             </div>
@@ -50,21 +50,21 @@ export const Footer = () => {
           <div>
             <h4 className="font-serif text-lg font-bold mb-4">Quick Links</h4>
             <nav className="flex flex-col gap-3">
-              <NavLink to="/" className="text-white/80 hover:text-accent transition-colors">
+              <a href="#hero" className="text-white/80 hover:text-accent transition-colors cursor-pointer">
                 Home
-              </NavLink>
-              <NavLink to="/gallery" className="text-white/80 hover:text-accent transition-colors">
+              </a>
+              <a href="#gallery" className="text-white/80 hover:text-accent transition-colors cursor-pointer">
                 Gallery
-              </NavLink>
-              <NavLink to="/services" className="text-white/80 hover:text-accent transition-colors">
+              </a>
+              <a href="#services" className="text-white/80 hover:text-accent transition-colors cursor-pointer">
                 Services
-              </NavLink>
-              <NavLink to="/about" className="text-white/80 hover:text-accent transition-colors">
+              </a>
+              <a href="#about" className="text-white/80 hover:text-accent transition-colors cursor-pointer">
                 About
-              </NavLink>
-              <NavLink to="/contact" className="text-white/80 hover:text-accent transition-colors">
+              </a>
+              <a href="#contact" className="text-white/80 hover:text-accent transition-colors cursor-pointer">
                 Contact
-              </NavLink>
+              </a>
             </nav>
           </div>
 
@@ -97,7 +97,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/60">
-            <p>© {currentYear} Jireh Durand Photography. All rights reserved.</p>
+            <p>© {currentYear} DominicaLens Photography. All rights reserved.</p>
             <p>Capturing the essence of the Nature Isle</p>
           </div>
         </div>
