@@ -1,5 +1,6 @@
-import { Camera, Mail, Phone, MapPin, Youtube, Facebook, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Youtube, Facebook, Instagram } from "lucide-react";
 import { NavLink } from "./NavLink";
+import logo from "@/assets/logo.png";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -10,10 +11,10 @@ export const Footer = () => {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-2 mb-4">
-              <Camera className="w-8 h-8 text-accent" />
+            <div className="flex items-center gap-3 mb-4">
+              <img src={logo} alt="EmeraldPics Logo" className="w-10 h-10 object-contain" />
               <div>
-                <h3 className="font-serif text-2xl font-bold">DominicaLens</h3>
+                <h3 className="font-serif text-2xl font-bold">EmeraldPics</h3>
                 <p className="text-sm text-white/70">Photography</p>
               </div>
             </div>
@@ -97,7 +98,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-white/60">
-            <p>© {currentYear} DominicaLens Photography. All rights reserved.</p>
+            <p>© {currentYear} EmeraldPics Photography. All rights reserved.</p>
             <p>Capturing the essence of the Nature Isle</p>
           </div>
         </div>
