@@ -68,12 +68,12 @@ export const About = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              About DominicaLens
+              About EmeraldPics
             </h2>
             
             <div className="space-y-4 text-muted-foreground leading-relaxed mb-8">
               <p>
-                Established in 2021, DominicaLens has grown into a recognized 
+                Established in 2021, EmeraldPics has grown into a recognized
                 photography outfit offering services for events and activities for both 
                 private and public entities across Dominica.
               </p>
