@@ -13,7 +13,7 @@ export const Hero = () => {
           alt="Dominica's stunning waterfall landscape"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/20 to-black/35" />
       </div>
 
       {/* Content */}
