@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, X, Play, Check, LogIn } from "lucide-react";
+import { Upload, X, Play, Check, LogIn, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { toast } from "sonner";
@@ -356,6 +356,36 @@ export const PhotoGallery = () => {
                 <X className="w-6 h-6" />
               </Button>
               
+              {/* Previous Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 w-12 h-12"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentSlideIndex((prev) =>
+                    prev === 0 ? selectedPhotosList.length - 1 : prev - 1
+                  );
+                }}
+              >
+                <ChevronLeft className="w-8 h-8" />
+              </Button>
+
+              {/* Next Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 w-12 h-12"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentSlideIndex((prev) =>
+                    prev === selectedPhotosList.length - 1 ? 0 : prev + 1
+                  );
+                }}
+              >
+                <ChevronRight className="w-8 h-8" />
+              </Button>
+              
               <div className="relative w-full h-full flex items-center justify-center p-8">
                 <motion.img
                   key={currentSlideIndex}
@@ -366,12 +396,6 @@ export const PhotoGallery = () => {
                   src={selectedPhotosList[currentSlideIndex]?.url}
                   alt="Slideshow"
                   className="max-w-full max-h-full object-contain"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCurrentSlideIndex((prev) =>
-                      prev === selectedPhotosList.length - 1 ? 0 : prev + 1
-                    );
-                  }}
                 />
               </div>
               
