@@ -1,6 +1,5 @@
-import { Mail, Phone, MapPin, Youtube, Facebook, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin, Youtube, Facebook, Instagram, Camera } from "lucide-react";
 import { NavLink } from "./NavLink";
-import logo from "@/assets/logo.png";
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -12,7 +11,7 @@ export const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
-              <img src={logo} alt="EmeraldPics Logo" className="w-10 h-10 object-contain" />
+              <Camera className="w-8 h-8 text-accent" />
               <div>
                 <h3 className="font-serif text-2xl font-bold">EmeraldPics</h3>
                 <p className="text-sm text-white/70">Photography</p>
