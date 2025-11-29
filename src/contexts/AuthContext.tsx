@@ -80,9 +80,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
-    if (error) {
+    
+    // Ignore "session not found" errors - user is already logged out
+    if (error && !error.message.toLowerCase().includes('session')) {
       toast.error(error.message);
     } else {
+      // Clear local state regardless of server response
+      setSession(null);
+      setUser(null);
       toast.success('Signed out successfully!');
     }
   };
