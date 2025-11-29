@@ -61,24 +61,26 @@ export const Hero = () => {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
+          <Button
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg group"
+            asChild
+          >
             <Link to="/gallery">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg group"
-              >
-                View Gallery
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              View Gallery
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold px-8 py-6 text-lg"
+            asChild
+          >
             <Link to="/services">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold px-8 py-6 text-lg"
-              >
-                Our Services
-              </Button>
+              Our Services
             </Link>
+          </Button>
           </motion.div>
         </motion.div>
 
