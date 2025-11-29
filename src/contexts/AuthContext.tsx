@@ -47,7 +47,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
     
     if (error) {
-      toast.error(error.message);
+      // Display generic error message without exposing credentials
+      toast.error('Sign in failed. Please check your email and password.');
     } else {
       toast.success('Signed in successfully!');
     }
@@ -70,7 +71,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
     
     if (error) {
-      toast.error(error.message);
+      // Display generic error message without exposing credentials
+      toast.error('Sign up failed. Please try again with a different email.');
     } else {
       toast.success('Account created! Please check your email to confirm.');
     }
@@ -83,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     
     // Ignore "session not found" errors - user is already logged out
     if (error && !error.message.toLowerCase().includes('session')) {
-      toast.error(error.message);
+      toast.error('Sign out failed. Please try again.');
     } else {
       // Clear local state regardless of server response
       setSession(null);
