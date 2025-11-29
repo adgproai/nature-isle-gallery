@@ -37,18 +37,18 @@ export const Navigation = () => {
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-            <img src={logo} alt="EmeraldPics Logo" className="w-14 h-14 object-contain group-hover:scale-110 transition-transform" />
+          <Link to="/" className="flex items-center gap-2 group cursor-pointer shrink-0">
+            <img src={logo} alt="EmeraldPics Logo" className="w-10 h-10 md:w-12 md:h-12 object-contain group-hover:scale-110 transition-transform" />
             <div>
-              <h1 className="font-serif text-2xl font-bold text-foreground">
+              <h1 className="font-serif text-lg md:text-xl font-bold text-foreground">
                 EmeraldPics
               </h1>
-              <p className="text-xs text-muted-foreground">Photography</p>
+              <p className="text-xs text-muted-foreground hidden sm:block">Photography</p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-4 lg:gap-6 flex-wrap">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
