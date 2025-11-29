@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 interface Photo {
   id: string;
@@ -24,6 +25,7 @@ export const PhotoGallery = () => {
   const [showUpload, setShowUpload] = useState(false);
   const [uploading, setUploading] = useState(false);
   const { user } = useAuth();
+  const { isAdmin, loading: adminLoading } = useAdminCheck();
   const navigate = useNavigate();
 
   // Fetch photos on mount
@@ -78,6 +80,11 @@ export const PhotoGallery = () => {
       return;
     }
 
+    if (!isAdmin) {
+      toast.error('Only administrators can upload photos');
+      return;
+    }
+
     setUploading(true);
     let successCount = 0;
 
@@ -118,7 +125,7 @@ export const PhotoGallery = () => {
       fetchPhotos();
       setShowUpload(false);
     }
-  }, [user, navigate]);
+  }, [user, isAdmin, navigate]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -141,8 +148,8 @@ export const PhotoGallery = () => {
   };
 
   const removePhoto = async (id: string) => {
-    if (!user) {
-      toast.error('Please sign in to delete photos');
+    if (!user || !isAdmin) {
+      toast.error('Only administrators can delete photos');
       return;
     }
 
@@ -207,17 +214,17 @@ export const PhotoGallery = () => {
                 Upload your photos in batches and create stunning slideshows
               </p>
             </div>
-            {user ? (
+            {user && isAdmin ? (
               <Button
                 variant="link"
                 onClick={() => setShowUpload(!showUpload)}
                 className="text-primary hover:text-primary/80"
-                disabled={uploading}
+                disabled={uploading || adminLoading}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 {uploading ? 'Uploading...' : 'Upload Photos'}
               </Button>
-            ) : (
+            ) : !user ? (
               <Button
                 variant="default"
                 onClick={() => navigate('/auth')}
@@ -226,12 +233,12 @@ export const PhotoGallery = () => {
                 <LogIn className="w-4 h-4 mr-2" />
                 Sign In to Upload
               </Button>
-            )}
+            ) : null}
           </div>
 
           {/* Upload Area - Toggleable */}
           <AnimatePresence>
-            {showUpload && user && (
+            {showUpload && user && isAdmin && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -310,13 +317,15 @@ export const PhotoGallery = () => {
                       <Check className="w-4 h-4 opacity-0" />
                     )}
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => removePhoto(photo.id)}
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
+                  {isAdmin && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => removePhoto(photo.id)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
                 </div>
                 {selectedPhotos.has(photo.id) && (
                   <div className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
