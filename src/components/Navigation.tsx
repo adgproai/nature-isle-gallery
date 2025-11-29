@@ -36,7 +36,7 @@ export const Navigation = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group cursor-pointer">
-            <img src={logo} alt="EmeraldPics Logo" className="w-18 h-18 object-contain group-hover:scale-110 transition-transform" />
+            <img src={logo} alt="EmeraldPics Logo" className="w-14 h-14 object-contain group-hover:scale-110 transition-transform" />
             <div>
               <h1 className="font-serif text-2xl font-bold text-foreground">
                 EmeraldPics
