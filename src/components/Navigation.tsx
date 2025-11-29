@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +58,28 @@ export const Navigation = () => {
                 {link.label}
               </Link>
             ))}
+            {user ? (
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-muted-foreground flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {user.email}
+                </span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => signOut()}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90">
+                  Sign In
+                </Button>
+              </Link>
+            )}
             <Link to="/contact">
               <Button variant="default" size="sm" className="bg-primary hover:bg-primary/90">
                 Book Now
@@ -92,7 +116,32 @@ export const Navigation = () => {
                     {link.label}
                   </Link>
                 ))}
-                <Link to="/contact">
+                {user ? (
+                  <>
+                    <span className="text-sm text-muted-foreground flex items-center gap-2 py-2">
+                      <User className="w-4 h-4" />
+                      {user.email}
+                    </span>
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        signOut();
+                        setIsOpen(false);
+                      }}
+                      className="w-full"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <Link to="/auth" onClick={() => setIsOpen(false)}>
+                    <Button variant="default" className="bg-primary hover:bg-primary/90 w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+                <Link to="/contact" onClick={() => setIsOpen(false)}>
                   <Button variant="default" className="bg-primary hover:bg-primary/90 w-full">
                     Book Now
                   </Button>

@@ -1,15 +1,19 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, X, Play, Check } from "lucide-react";
+import { Upload, X, Play, Check, LogIn } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Photo {
   id: string;
   url: string;
   name: string;
+  storage_path: string;
 }
 
 export const PhotoGallery = () => {
@@ -18,18 +22,103 @@ export const PhotoGallery = () => {
   const [isSlideshow, setIsSlideshow] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [showUpload, setShowUpload] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newPhotos: Photo[] = acceptedFiles.map((file) => ({
-      id: Math.random().toString(36).substr(2, 9),
-      url: URL.createObjectURL(file),
-      name: file.name,
-    }));
+  // Fetch photos on mount
+  useEffect(() => {
+    fetchPhotos();
     
-    setPhotos((prev) => [...prev, ...newPhotos]);
-    toast.success(`${acceptedFiles.length} photo${acceptedFiles.length > 1 ? 's' : ''} uploaded successfully!`);
-    setShowUpload(false); // Hide upload area after successful upload
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'photos'
+        },
+        () => fetchPhotos()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
+
+  const fetchPhotos = async () => {
+    const { data, error } = await supabase
+      .from('photos')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching photos:', error);
+      return;
+    }
+
+    if (data) {
+      const photosWithUrls = data.map((photo) => ({
+        id: photo.id,
+        url: supabase.storage.from('gallery-photos').getPublicUrl(photo.storage_path).data.publicUrl,
+        name: photo.title || 'Untitled',
+        storage_path: photo.storage_path,
+      }));
+      setPhotos(photosWithUrls);
+    }
+  };
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    if (!user) {
+      toast.error('Please sign in to upload photos');
+      navigate('/auth');
+      return;
+    }
+
+    setUploading(true);
+    let successCount = 0;
+
+    for (const file of acceptedFiles) {
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+
+        // Upload to storage
+        const { error: uploadError } = await supabase.storage
+          .from('gallery-photos')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        // Save to database
+        const { error: dbError } = await supabase
+          .from('photos')
+          .insert({
+            user_id: user.id,
+            storage_path: fileName,
+            title: file.name,
+          });
+
+        if (dbError) throw dbError;
+        
+        successCount++;
+      } catch (error: any) {
+        console.error('Upload error:', error);
+        toast.error(`Failed to upload ${file.name}`);
+      }
+    }
+
+    setUploading(false);
+    
+    if (successCount > 0) {
+      toast.success(`${successCount} photo${successCount > 1 ? 's' : ''} uploaded successfully!`);
+      fetchPhotos();
+      setShowUpload(false);
+    }
+  }, [user, navigate]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -51,14 +140,42 @@ export const PhotoGallery = () => {
     });
   };
 
-  const removePhoto = (id: string) => {
-    setPhotos((prev) => prev.filter((photo) => photo.id !== id));
-    setSelectedPhotos((prev) => {
-      const newSet = new Set(prev);
-      newSet.delete(id);
-      return newSet;
-    });
-    toast.success("Photo removed");
+  const removePhoto = async (id: string) => {
+    if (!user) {
+      toast.error('Please sign in to delete photos');
+      return;
+    }
+
+    const photo = photos.find(p => p.id === id);
+    if (!photo) return;
+
+    try {
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('gallery-photos')
+        .remove([photo.storage_path]);
+
+      if (storageError) throw storageError;
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('photos')
+        .delete()
+        .eq('id', id);
+
+      if (dbError) throw dbError;
+
+      setPhotos((prev) => prev.filter((p) => p.id !== id));
+      setSelectedPhotos((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+      toast.success("Photo removed");
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      toast.error('Failed to delete photo');
+    }
   };
 
   const startSlideshow = () => {
@@ -90,19 +207,31 @@ export const PhotoGallery = () => {
                 Upload your photos in batches and create stunning slideshows
               </p>
             </div>
-            <Button
-              variant="link"
-              onClick={() => setShowUpload(!showUpload)}
-              className="text-primary hover:text-primary/80"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              Upload Photos
-            </Button>
+            {user ? (
+              <Button
+                variant="link"
+                onClick={() => setShowUpload(!showUpload)}
+                className="text-primary hover:text-primary/80"
+                disabled={uploading}
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                {uploading ? 'Uploading...' : 'Upload Photos'}
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                onClick={() => navigate('/auth')}
+                className="bg-primary hover:bg-primary/90"
+              >
+                <LogIn className="w-4 h-4 mr-2" />
+                Sign In to Upload
+              </Button>
+            )}
           </div>
 
           {/* Upload Area - Toggleable */}
           <AnimatePresence>
-            {showUpload && (
+            {showUpload && user && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
