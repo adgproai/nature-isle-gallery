@@ -89,6 +89,7 @@ const Auth = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
+                  autoComplete="off"
                 />
               </div>
 
@@ -102,6 +103,7 @@ const Auth = () => {
                   placeholder="••••••••"
                   required
                   minLength={6}
+                  autoComplete="off"
                 />
               </div>
 
