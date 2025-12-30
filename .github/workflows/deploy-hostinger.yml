@@ -28,6 +28,13 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 
+      # Ensure Hostinger SPA refresh works (Vite may not copy dotfiles like .htaccess into dist)
+      - name: Copy .htaccess into dist
+        run: |
+          if [ -f "public/.htaccess" ]; then
+            cp public/.htaccess dist/.htaccess
+          fi
+
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
