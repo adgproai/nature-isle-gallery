@@ -11,14 +11,6 @@ import logo from '@/assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 
 // Validation schemas
 const loginSchema = z.object({
@@ -64,7 +56,7 @@ const Auth = () => {
     },
   });
 
-  const currentForm = isLogin ? loginForm : signUpForm;
+  
 
   useEffect(() => {
     if (user) {
@@ -119,118 +111,115 @@ const Auth = () => {
             </p>
 
             {isLogin ? (
-              <Form {...loginForm} key="login-form">
-                <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                  <FormField
-                    control={loginForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="you@example.com"
-                            autoComplete="email"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                <div className="space-y-2 text-left">
+                  <label htmlFor="login-email" className="text-sm font-medium text-foreground">
+                    Email
+                  </label>
+                  <Input
+                    id="login-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    {...loginForm.register('email')}
                   />
+                  {loginForm.formState.errors.email?.message && (
+                    <p className="text-sm font-medium text-destructive">
+                      {String(loginForm.formState.errors.email.message)}
+                    </p>
+                  )}
+                </div>
 
-                  <FormField
-                    control={loginForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="••••••••"
-                            autoComplete="current-password"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="space-y-2 text-left">
+                  <label htmlFor="login-password" className="text-sm font-medium text-foreground">
+                    Password
+                  </label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="current-password"
+                    {...loginForm.register('password')}
                   />
+                  {loginForm.formState.errors.password?.message && (
+                    <p className="text-sm font-medium text-destructive">
+                      {String(loginForm.formState.errors.password.message)}
+                    </p>
+                  )}
+                </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90"
-                    disabled={loading}
-                  >
-                    {loading ? 'Please wait...' : 'Sign In'}
-                  </Button>
-                </form>
-              </Form>
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={loading}
+                >
+                  {loading ? 'Please wait...' : 'Sign In'}
+                </Button>
+              </form>
             ) : (
-              <Form {...signUpForm} key="signup-form">
-                <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4">
-                  <FormField
-                    control={signUpForm.control}
-                    name="fullName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <Input
-                          type="text"
-                          placeholder="John Doe"
-                          autoComplete="name"
-                          {...field}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
+              <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4">
+                <div className="space-y-2 text-left">
+                  <label htmlFor="signup-name" className="text-sm font-medium text-foreground">
+                    Full Name
+                  </label>
+                  <Input
+                    id="signup-name"
+                    type="text"
+                    placeholder="John Doe"
+                    autoComplete="name"
+                    {...signUpForm.register('fullName')}
                   />
+                  {signUpForm.formState.errors.fullName?.message && (
+                    <p className="text-sm font-medium text-destructive">
+                      {String(signUpForm.formState.errors.fullName.message)}
+                    </p>
+                  )}
+                </div>
 
-                  <FormField
-                    control={signUpForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <Input
-                          type="email"
-                          placeholder="you@example.com"
-                          autoComplete="email"
-                          {...field}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="space-y-2 text-left">
+                  <label htmlFor="signup-email" className="text-sm font-medium text-foreground">
+                    Email
+                  </label>
+                  <Input
+                    id="signup-email"
+                    type="email"
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    {...signUpForm.register('email')}
                   />
+                  {signUpForm.formState.errors.email?.message && (
+                    <p className="text-sm font-medium text-destructive">
+                      {String(signUpForm.formState.errors.email.message)}
+                    </p>
+                  )}
+                </div>
 
-                  <FormField
-                    control={signUpForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <Input
-                          type="password"
-                          placeholder="••••••••"
-                          autoComplete="new-password"
-                          {...field}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div className="space-y-2 text-left">
+                  <label htmlFor="signup-password" className="text-sm font-medium text-foreground">
+                    Password
+                  </label>
+                  <Input
+                    id="signup-password"
+                    type="password"
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    {...signUpForm.register('password')}
                   />
+                  {signUpForm.formState.errors.password?.message && (
+                    <p className="text-sm font-medium text-destructive">
+                      {String(signUpForm.formState.errors.password.message)}
+                    </p>
+                  )}
+                </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90"
-                    disabled={loading}
-                  >
-                    {loading ? 'Please wait...' : 'Sign Up'}
-                  </Button>
-                </form>
-              </Form>
+                <Button
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary/90"
+                  disabled={loading}
+                >
+                  {loading ? 'Please wait...' : 'Sign Up'}
+                </Button>
+              </form>
             )}
 
             <div className="mt-6 text-center">
