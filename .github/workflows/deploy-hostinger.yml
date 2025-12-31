@@ -35,6 +35,32 @@ jobs:
             cp public/.htaccess dist/.htaccess
           fi
 
+      # Validate FTP_REMOTE_DIR format (must end with /)
+      - name: Validate FTP_REMOTE_DIR
+        env:
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          echo "FTP_REMOTE_DIR='${FTP_REMOTE_DIR}'"
+          if [[ -z "${FTP_REMOTE_DIR}" ]]; then
+            echo "ERROR: FTP_REMOTE_DIR is empty"
+            exit 1
+          fi
+          if [[ "${FTP_REMOTE_DIR}" != */ ]]; then
+            echo "ERROR: FTP_REMOTE_DIR must end with '/' (example: public_html/)"
+            exit 1
+          fi
+
+      - name: Inspect dist output
+        run: |
+          echo "--- dist/ ---"
+          ls -la dist || true
+          echo "--- dist/.htaccess (if present) ---"
+          if [ -f "dist/.htaccess" ]; then
+            sed -n '1,120p' dist/.htaccess
+          else
+            echo "(no dist/.htaccess)"
+          fi
+
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
