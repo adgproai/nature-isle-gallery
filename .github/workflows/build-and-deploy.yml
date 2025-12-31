@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Needed so github-actions can push to the dist branch
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
