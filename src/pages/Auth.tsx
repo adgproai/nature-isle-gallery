@@ -72,11 +72,12 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
-  // Reset form when switching between login and signup
-  useEffect(() => {
+  // Reset forms when switching between login and signup
+  const handleToggleMode = () => {
     loginForm.reset();
     signUpForm.reset();
-  }, [isLogin]);
+    setIsLogin(!isLogin);
+  };
 
   const onLoginSubmit = async (data: LoginFormValues) => {
     setLoading(true);
@@ -240,7 +241,7 @@ const Auth = () => {
 
             <div className="mt-6 text-center">
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={handleToggleMode}
                 className="text-sm text-primary hover:underline"
               >
                 {isLogin
