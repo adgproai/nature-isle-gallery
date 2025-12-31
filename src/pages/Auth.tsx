@@ -177,14 +177,12 @@ const Auth = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="John Doe"
-                            autoComplete="name"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Input
+                          type="text"
+                          placeholder="John Doe"
+                          autoComplete="name"
+                          {...field}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -196,14 +194,12 @@ const Auth = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="you@example.com"
-                            autoComplete="email"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Input
+                          type="email"
+                          placeholder="you@example.com"
+                          autoComplete="email"
+                          {...field}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -215,14 +211,12 @@ const Auth = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="••••••••"
-                            autoComplete="new-password"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Input
+                          type="password"
+                          placeholder="••••••••"
+                          autoComplete="new-password"
+                          {...field}
+                        />
                         <FormMessage />
                       </FormItem>
                     )}
