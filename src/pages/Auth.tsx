@@ -119,7 +119,7 @@ const Auth = () => {
             </p>
 
             {isLogin ? (
-              <Form {...loginForm}>
+              <Form {...loginForm} key="login-form">
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <FormField
                     control={loginForm.control}
@@ -131,7 +131,7 @@ const Auth = () => {
                           <Input
                             type="email"
                             placeholder="you@example.com"
-                            autoComplete="off"
+                            autoComplete="email"
                             {...field}
                           />
                         </FormControl>
@@ -150,7 +150,7 @@ const Auth = () => {
                           <Input
                             type="password"
                             placeholder="••••••••"
-                            autoComplete="off"
+                            autoComplete="current-password"
                             {...field}
                           />
                         </FormControl>
@@ -169,7 +169,7 @@ const Auth = () => {
                 </form>
               </Form>
             ) : (
-              <Form {...signUpForm}>
+              <Form {...signUpForm} key="signup-form">
                 <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4">
                   <FormField
                     control={signUpForm.control}
@@ -181,7 +181,7 @@ const Auth = () => {
                           <Input
                             type="text"
                             placeholder="John Doe"
-                            autoComplete="off"
+                            autoComplete="name"
                             {...field}
                           />
                         </FormControl>
@@ -200,7 +200,7 @@ const Auth = () => {
                           <Input
                             type="email"
                             placeholder="you@example.com"
-                            autoComplete="off"
+                            autoComplete="email"
                             {...field}
                           />
                         </FormControl>
@@ -219,7 +219,7 @@ const Auth = () => {
                           <Input
                             type="password"
                             placeholder="••••••••"
-                            autoComplete="off"
+                            autoComplete="new-password"
                             {...field}
                           />
                         </FormControl>
