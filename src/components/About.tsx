@@ -1,31 +1,24 @@
 import { motion } from "framer-motion";
 import { Award, MapPin, Users, Heart } from "lucide-react";
 import rainforestImg from "@/assets/rainforest.jpg";
-import { useSiteContent, AboutContent } from "@/hooks/useSiteContent";
 
-const iconMap = {
-  "Events Covered": Award,
-  "Happy Clients": Users,
-  "Years Active": MapPin,
-  "5-Star Reviews": Heart,
-};
+const achievements = [
+  { icon: Award, label: "Events Covered", value: "100+" },
+  { icon: Users, label: "Happy Clients", value: "500+" },
+  { icon: MapPin, label: "Years Active", value: "3+" },
+  { icon: Heart, label: "5-Star Reviews", value: "50+" },
+];
+
+const notableEvents = [
+  "Golden Drum Awards",
+  "National Schools Arts Festival",
+  "Cadence-Lypso Festival",
+  "District Cultural Festivals",
+  "Portsmouth Carnival",
+  "Independence Activities",
+];
 
 export const About = () => {
-  const { content, isLoading } = useSiteContent<AboutContent>('about');
-
-  if (isLoading) {
-    return (
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="animate-pulse text-center">Loading...</div>
-        </div>
-      </section>
-    );
-  }
-
-  const stats = content?.stats || [];
-  const notableEvents = content?.notableEvents || [];
-
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-4">
@@ -46,27 +39,24 @@ export const About = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-8 left-8 text-white">
-                <p className="text-sm font-medium mb-2">Based in {content?.location || 'Dominica'}</p>
+                <p className="text-sm font-medium mb-2">Based in Fortune, Dominica</p>
                 <h3 className="font-serif text-3xl font-bold">
-                  {content?.locationTagline || 'Capturing the Nature Isle'}
+                  Capturing the Nature Isle
                 </h3>
               </div>
             </div>
             
             {/* Stats Grid */}
             <div className="absolute -bottom-8 -right-8 grid grid-cols-2 gap-4 bg-card p-6 rounded-xl shadow-xl border border-border">
-              {stats.map((stat) => {
-                const IconComponent = iconMap[stat.label as keyof typeof iconMap] || Award;
-                return (
-                  <div key={stat.label} className="text-center">
-                    <IconComponent className="w-6 h-6 text-primary mx-auto mb-2" />
-                    <div className="font-serif text-2xl font-bold text-card-foreground">
-                      {stat.value}
-                    </div>
-                    <div className="text-xs text-muted-foreground">{stat.label}</div>
+              {achievements.map((achievement) => (
+                <div key={achievement.label} className="text-center">
+                  <achievement.icon className="w-6 h-6 text-primary mx-auto mb-2" />
+                  <div className="font-serif text-2xl font-bold text-card-foreground">
+                    {achievement.value}
                   </div>
-                );
-              })}
+                  <div className="text-xs text-muted-foreground">{achievement.label}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
@@ -78,13 +68,27 @@ export const About = () => {
             transition={{ duration: 0.8 }}
           >
             <h2 className="font-serif text-4xl md:text-5xl font-bold mb-6 text-foreground">
-              {content?.title || 'About EmeraldPics'}
+              About EmeraldPics
             </h2>
             
             <div className="space-y-4 text-muted-foreground leading-relaxed mb-8">
-              <p>{content?.paragraph1}</p>
-              <p>{content?.paragraph2}</p>
-              <p>{content?.paragraph3}</p>
+              <p>
+                Established in 2021, EmeraldPics has grown into a recognized
+                photography outfit offering services for events and activities for both 
+                private and public entities across Dominica.
+              </p>
+              
+              <p>
+                Based in Fortune, Dominica, Jireh Durand serves as the main photographer 
+                and videographer, bringing professional expertise and artistic vision to 
+                every project. With a deep connection to the Nature Isle, we specialize 
+                in capturing the essence of Dominica's natural beauty and cultural richness.
+              </p>
+              
+              <p>
+                We also run a YouTube channel dedicated to promoting the work of local 
+                musical artists, contributing to Dominica's vibrant cultural scene.
+              </p>
             </div>
 
             <div className="bg-mist p-6 rounded-xl mb-8">
@@ -103,7 +107,7 @@ export const About = () => {
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin className="w-4 h-4 text-primary" />
-              <span>{content?.location || 'Dominica'} • Serving all of the Nature Isle</span>
+              <span>Fortune, Dominica • Serving all of the Nature Isle</span>
             </div>
           </motion.div>
         </div>

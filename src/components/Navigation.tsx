@@ -1,17 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Menu, X, LogOut, User, Shield } from "lucide-react";
+import { Menu, X, LogOut, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 export const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user, signOut } = useAuth();
-  const { isAdmin } = useAdminCheck();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,15 +58,6 @@ export const Navigation = () => {
                 {link.label}
               </Link>
             ))}
-            {isAdmin && (
-              <Link
-                to="/admin"
-                className="text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-1"
-              >
-                <Shield className="w-4 h-4" />
-                Admin
-              </Link>
-            )}
             {user ? (
               <div className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground flex items-center gap-2">
@@ -127,16 +116,6 @@ export const Navigation = () => {
                     {link.label}
                   </Link>
                 ))}
-                {isAdmin && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setIsOpen(false)}
-                    className="text-primary hover:text-primary/80 transition-colors font-medium py-2 flex items-center gap-2"
-                  >
-                    <Shield className="w-4 h-4" />
-                    Admin
-                  </Link>
-                )}
                 {user ? (
                   <>
                     <span className="text-sm text-muted-foreground flex items-center gap-2 py-2">
