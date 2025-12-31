@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
-import { motion } from 'framer-motion';
+import { Navigation } from '@/components/Navigation';
 import logo from '@/assets/logo.png';
+import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -34,6 +34,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 const Auth = () => {
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp, user } = useAuth();
@@ -64,8 +66,41 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
+  // Debug instrumentation: detect click interception/overlays on signup fields.
+  useEffect(() => {
+    if (import.meta.env.PROD) return;
+
+    const handler = (e: PointerEvent) => {
+      if (isLogin) return;
+      const card = cardRef.current;
+      if (!card) return;
+
+      const target = e.target as HTMLElement | null;
+      if (!target || !card.contains(target)) return;
+
+      const topEl = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
+      const topStyle = topEl ? window.getComputedStyle(topEl) : null;
+
+      console.log('[Auth Debug] pointerdown', {
+        x: e.clientX,
+        y: e.clientY,
+        targetTag: target.tagName,
+        targetId: (target as HTMLElement).id,
+        topTag: topEl?.tagName,
+        topId: topEl?.id,
+        topPointerEvents: topStyle?.pointerEvents,
+        topZIndex: topStyle?.zIndex,
+      });
+    };
+
+    document.addEventListener('pointerdown', handler, true);
+    return () => document.removeEventListener('pointerdown', handler, true);
+  }, [isLogin]);
+
   // Reset forms when switching between login and signup
   const handleToggleMode = () => {
+    // Ensure no element is holding focus during switch
+    (document.activeElement as HTMLElement | null)?.blur?.();
     loginForm.reset();
     signUpForm.reset();
     setIsLogin(!isLogin);
@@ -98,7 +133,7 @@ const Auth = () => {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md mx-auto"
         >
-          <Card className="p-8">
+          <Card ref={cardRef} className="p-8 relative isolate z-10">
             <div className="flex justify-center mb-6">
               <img src={logo} alt="EmeraldPics Logo" className="w-20 h-20 object-contain" />
             </div>
@@ -111,8 +146,8 @@ const Auth = () => {
             </p>
 
             {isLogin ? (
-              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                <div className="space-y-2 text-left">
+              <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4 relative z-10">
+                <div className="space-y-2 text-left relative z-10">
                   <label htmlFor="login-email" className="text-sm font-medium text-foreground">
                     Email
                   </label>
@@ -121,6 +156,7 @@ const Auth = () => {
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
+                    className="relative z-10 pointer-events-auto"
                     {...loginForm.register('email')}
                   />
                   {loginForm.formState.errors.email?.message && (
@@ -130,7 +166,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                <div className="space-y-2 text-left">
+                <div className="space-y-2 text-left relative z-10">
                   <label htmlFor="login-password" className="text-sm font-medium text-foreground">
                     Password
                   </label>
@@ -139,6 +175,7 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     autoComplete="current-password"
+                    className="relative z-10 pointer-events-auto"
                     {...loginForm.register('password')}
                   />
                   {loginForm.formState.errors.password?.message && (
@@ -157,8 +194,8 @@ const Auth = () => {
                 </Button>
               </form>
             ) : (
-              <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4">
-                <div className="space-y-2 text-left">
+              <form onSubmit={signUpForm.handleSubmit(onSignUpSubmit)} className="space-y-4 relative z-10">
+                <div className="space-y-2 text-left relative z-10">
                   <label htmlFor="signup-name" className="text-sm font-medium text-foreground">
                     Full Name
                   </label>
@@ -167,6 +204,7 @@ const Auth = () => {
                     type="text"
                     placeholder="John Doe"
                     autoComplete="name"
+                    className="relative z-10 pointer-events-auto"
                     {...signUpForm.register('fullName')}
                   />
                   {signUpForm.formState.errors.fullName?.message && (
@@ -176,7 +214,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                <div className="space-y-2 text-left">
+                <div className="space-y-2 text-left relative z-10">
                   <label htmlFor="signup-email" className="text-sm font-medium text-foreground">
                     Email
                   </label>
@@ -185,6 +223,7 @@ const Auth = () => {
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
+                    className="relative z-10 pointer-events-auto"
                     {...signUpForm.register('email')}
                   />
                   {signUpForm.formState.errors.email?.message && (
@@ -194,7 +233,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                <div className="space-y-2 text-left">
+                <div className="space-y-2 text-left relative z-10">
                   <label htmlFor="signup-password" className="text-sm font-medium text-foreground">
                     Password
                   </label>
@@ -203,6 +242,7 @@ const Auth = () => {
                     type="password"
                     placeholder="••••••••"
                     autoComplete="new-password"
+                    className="relative z-10 pointer-events-auto"
                     {...signUpForm.register('password')}
                   />
                   {signUpForm.formState.errors.password?.message && (
