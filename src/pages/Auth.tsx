@@ -38,6 +38,7 @@ const Auth = () => {
 
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [debugHit, setDebugHit] = useState<string>('');
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
 
@@ -67,9 +68,8 @@ const Auth = () => {
   }, [user, navigate]);
 
   // Debug instrumentation: detect click interception/overlays on signup fields.
+  // (Visible in console AND on-page so you don't need DevTools.)
   useEffect(() => {
-    if (import.meta.env.PROD) return;
-
     const handler = (e: PointerEvent) => {
       if (isLogin) return;
       const card = cardRef.current;
@@ -81,16 +81,21 @@ const Auth = () => {
       const topEl = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
       const topStyle = topEl ? window.getComputedStyle(topEl) : null;
 
-      console.log('[Auth Debug] pointerdown', {
+      const payload = {
         x: e.clientX,
         y: e.clientY,
         targetTag: target.tagName,
-        targetId: (target as HTMLElement).id,
+        targetId: target.id,
         topTag: topEl?.tagName,
         topId: topEl?.id,
         topPointerEvents: topStyle?.pointerEvents,
         topZIndex: topStyle?.zIndex,
-      });
+        topClass: topEl?.className,
+      };
+
+      setDebugHit(JSON.stringify(payload, null, 2));
+      // eslint-disable-next-line no-console
+      console.log('[Auth Debug] pointerdown', payload);
     };
 
     document.addEventListener('pointerdown', handler, true);
@@ -144,6 +149,15 @@ const Auth = () => {
             <p className="text-center text-muted-foreground mb-8">
               {isLogin ? 'Sign in to upload photos' : 'Sign up to start uploading'}
             </p>
+
+            {!isLogin && (
+              <div className="mb-6 rounded-md border border-border bg-muted/40 p-3 text-left">
+                <p className="text-xs font-medium text-foreground mb-2">Debug: click a field; this shows what element is on top.</p>
+                <pre className="text-[11px] leading-snug whitespace-pre-wrap break-words text-muted-foreground">
+                  {debugHit || 'Click Full Name or Email…'}
+                </pre>
+              </div>
+            )}
 
             {isLogin ? (
               <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4 relative z-10">
