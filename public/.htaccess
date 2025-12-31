@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteBase /
+
+# Handle Front Controller Pattern for SPA
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default index file
+DirectoryIndex index.html
