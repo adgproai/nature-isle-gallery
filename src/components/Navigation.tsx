@@ -31,11 +31,11 @@ export const Navigation = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 w-full z-50 pointer-events-none transition-all duration-300 ${
         isScrolled ? "bg-background/95 backdrop-blur-md shadow-md" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 py-4 pointer-events-auto">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group cursor-pointer shrink-0">
             <img src={logo} alt="EmeraldPics Logo" className="w-10 h-10 md:w-12 md:h-12 object-contain group-hover:scale-110 transition-transform" />
