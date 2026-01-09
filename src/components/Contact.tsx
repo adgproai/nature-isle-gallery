@@ -1,13 +1,28 @@
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Card, CardContent } from "./ui/card";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSiteContent, ContactContent } from "@/hooks/useSiteContent";
+
+const defaultContent: ContactContent = {
+  phone: "767 615 4170",
+  email: "steve.vidal@gmail.com",
+  location: "Fortune, Dominica",
+  businessHours: {
+    weekday: "9:00 AM - 6:00 PM",
+    saturday: "10:00 AM - 4:00 PM",
+    sunday: "By Appointment",
+  },
+};
 
 export const Contact = () => {
+  const { content, isLoading } = useSiteContent<ContactContent>('contact');
+  const displayContent = content || defaultContent;
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,22 +40,32 @@ export const Contact = () => {
     {
       icon: Phone,
       label: "Phone",
-      value: "767 615 4170",
-      href: "tel:7676154170",
+      value: displayContent.phone,
+      href: `tel:${displayContent.phone.replace(/\s/g, '')}`,
     },
     {
       icon: Mail,
       label: "Email",
-      value: "steve.vidal@gmail.com",
-      href: "mailto:steve.vidal@gmail.com",
+      value: displayContent.email,
+      href: `mailto:${displayContent.email}`,
     },
     {
       icon: MapPin,
       label: "Location",
-      value: "Fortune, Dominica",
+      value: displayContent.location,
       href: null,
     },
   ];
+
+  if (isLoading) {
+    return (
+      <section className="py-24 bg-gradient-to-b from-background to-mist">
+        <div className="container mx-auto px-4 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-24 bg-gradient-to-b from-background to-mist">
@@ -181,15 +206,15 @@ export const Contact = () => {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Monday - Friday</span>
-                    <span className="text-foreground font-medium">9:00 AM - 6:00 PM</span>
+                    <span className="text-foreground font-medium">{displayContent.businessHours.weekday}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Saturday</span>
-                    <span className="text-foreground font-medium">10:00 AM - 4:00 PM</span>
+                    <span className="text-foreground font-medium">{displayContent.businessHours.saturday}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Sunday</span>
-                    <span className="text-foreground font-medium">By Appointment</span>
+                    <span className="text-foreground font-medium">{displayContent.businessHours.sunday}</span>
                   </div>
                 </div>
               </CardContent>
@@ -204,9 +229,15 @@ export const Contact = () => {
                   We typically respond to inquiries within 24 hours. For urgent bookings, 
                   please call us directly.
                 </p>
-                <Button variant="outline" className="border-accent text-accent hover:bg-accent/10">
-                  <Phone className="w-4 h-4 mr-2" />
-                  Call Now
+                <Button 
+                  variant="outline" 
+                  className="border-accent text-accent hover:bg-accent/10"
+                  asChild
+                >
+                  <a href={`tel:${displayContent.phone.replace(/\s/g, '')}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call Now
+                  </a>
                 </Button>
               </CardContent>
             </Card>
