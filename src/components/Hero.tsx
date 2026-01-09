@@ -1,10 +1,21 @@
 import { motion } from "framer-motion";
 import { Button } from "./ui/button";
-import { ArrowRight, Camera } from "lucide-react";
+import { ArrowRight, Camera, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroWaterfall from "@/assets/hero-waterfall.jpg";
+import { useSiteContent, HeroContent } from "@/hooks/useSiteContent";
+
+const defaultContent: HeroContent = {
+  tagline: "Capturing Dominica's Natural Beauty",
+  title: "EmeraldPics",
+  subtitle: "Photography",
+  description: "Professional event photography and videography services in the heart of the Nature Isle",
+};
 
 export const Hero = () => {
+  const { content, isLoading } = useSiteContent<HeroContent>('hero');
+  const displayContent = content || defaultContent;
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -19,70 +30,74 @@ export const Hero = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl mx-auto"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30"
-          >
-            <Camera className="w-5 h-5 text-accent" />
-            <span className="text-sm font-medium">Capturing Dominica's Natural Beauty</span>
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="font-serif text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          >
-            EmeraldPics
-            <br />
-            <span className="text-accent">Photography</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto font-light"
-          >
-            Professional event photography and videography services in the heart of the Nature Isle
-          </motion.p>
-
+        {isLoading ? (
+          <div className="flex items-center justify-center">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
+          </div>
+        ) : (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-4xl mx-auto"
           >
-          <Button
-            size="lg"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg group"
-            asChild
-          >
-            <Link to="/gallery">
-              View Gallery
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold px-8 py-6 text-lg"
-            asChild
-          >
-            <Link to="/services">
-              Our Services
-            </Link>
-          </Button>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="inline-flex items-center gap-2 mb-6 px-4 py-2 bg-primary/20 backdrop-blur-sm rounded-full border border-primary/30"
+            >
+              <Camera className="w-5 h-5 text-accent" />
+              <span className="text-sm font-medium">{displayContent.tagline}</span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="font-serif text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            >
+              {displayContent.title}
+              <br />
+              <span className="text-accent">{displayContent.subtitle}</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-xl md:text-2xl mb-8 text-white/90 max-w-2xl mx-auto font-light"
+            >
+              {displayContent.description}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <Button
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg group"
+                asChild
+              >
+                <Link to="/gallery">
+                  View Gallery
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/30 bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 font-semibold px-8 py-6 text-lg"
+                asChild
+              >
+                <Link to="/services">Our Services</Link>
+              </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        )}
 
         {/* Scroll Indicator */}
         <motion.div
